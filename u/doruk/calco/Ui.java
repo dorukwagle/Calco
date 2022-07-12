@@ -45,19 +45,21 @@ public class Ui implements ActionListener{
         var div = new JButton("/");
         div.addActionListener(this);
         
-        
+        //setting button sizes
         bC.setPreferredSize(new Dimension(150, 55));
         bbo.setPreferredSize(new Dimension(150, 55));
         bbc.setPreferredSize(new Dimension(150, 55));
         bper.setPreferredSize(new Dimension(150, 55));
         div.setPreferredSize(new Dimension(150, 55));
         
+        //setting buttons fonts, styles and size of font
         bC.setFont(new Font("Ariel", Font.PLAIN, 40));
         bbo.setFont(new Font("Ariel", Font.PLAIN, 40));
         bbc.setFont(new Font("Ariel", Font.PLAIN, 40));
         bper.setFont(new Font("Ariel", Font.PLAIN, 40));
         div.setFont(new Font("Ariel", Font.PLAIN, 40));
 
+        //add all the buttons to row1
         row1.add(bC);
         row1.add(bbo);
         row1.add(bbc);
@@ -70,9 +72,12 @@ public class Ui implements ActionListener{
         
         vertLay.add(grid);
 
+        //create list of all the button texts
         String[] btnArray = {"^", "n√x", "<<", ">>", "7", "8", "9", "*", "4", "5", "6", "-", "1", "2", "3", "+", "+/-", "0", ".", "="};
         int len = btnArray.length;
+        //initialize the jButton array to the length of btnArray
         btn = new JButton[len];
+        //create all the buttons in a loop and set the corresponding button text from btnArray
         for( int i = 0; i < len; i++){
             btn[i] = new JButton();
             btn[i].setPreferredSize(new Dimension(150, 55));
@@ -82,13 +87,27 @@ public class Ui implements ActionListener{
             grid.add(btn[i]);
         }
 
+        //add verticalLay to the main frame
         window.add(vertLay);
+        //set the main window size
         window.setSize(700, 600);
         window.setVisible(true);
-        window.setResizable(false);
+        window.setResizable(false); // disable window resizing
 
     }
 
+    //getter method to get the text of the txt 
+    public String getTxt(){
+        return txt.getText();
+    }
+
+    //setter method to set the text of txt
+    // this method is required to set the answer to the txt
+    public void setTxt(String txt){
+        this.txt.setText(txt);
+    }
+
+    //define what happens when each buttons is pressed
     public void actionPerformed(ActionEvent e){
         if(!clickedForTheFirstTime){
             txt.setText("");
