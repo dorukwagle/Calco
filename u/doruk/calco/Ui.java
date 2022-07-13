@@ -3,11 +3,23 @@ package u.doruk.calco;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
+
 public class Ui implements ActionListener{
     JTextArea txt;
     JButton[] btn;
     boolean clickedForTheFirstTime = false;
-    public Ui(){
+    Calco calco;
+    List<String> expressions = new ArrayList<String>();
+    //variable to store the current position of cursor in the scrolling list using << and  >> buttons
+    int currentPosition = 0;
+    //store length of expressions list
+    int expressionsLength = 0; // stores the index value of list
+    public Ui(Calco clc){
+        //initialize the calco variable to the instance of Calco received as clc
+        calco = clc;
+
         //creating the main application window
         JFrame window = new JFrame("Doruk's Calco");
         //create main vertical layout
@@ -16,13 +28,38 @@ public class Ui implements ActionListener{
         
         //create textarea to hold all the expressions and answers
         txt = new JTextArea("A new way of calculation", 10 ,5);
-        txt.setPreferredSize(new Dimension(700, 200));
+        // txt.setPreferredSize(new Dimension(700, 200));
+        txt.addKeyListener(new KeyListener(){
+            @Override
+            public void keyTyped(KeyEvent ev){
+            }
+            @Override
+            public void keyReleased(KeyEvent ev){
+            }
+            @Override
+            public void keyPressed(KeyEvent ev){
+                if(ev.getKeyCode() == 8){
+                    String text = txt.getText();
+                    if(text.equals(""))
+                        return;
+                    int len = text.length();
+                    text = text.substring(0, len - 1);
+                    txt.setText(text);
+                }
+            }
+
+        });
         txt.setBackground(Color.gray);
         txt.setForeground(Color.BLUE);
         txt.setEditable(false);
+        txt.setCursor(new Cursor(5));
         txt.setFont(new Font("Ariel", Font.ITALIC, 50));
         
-        vertLay.add(txt);
+        JScrollPane scroller = new JScrollPane(txt);
+        scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        vertLay.add(scroller);
+        scroller.setAutoscrolls(true);
         //create row1 for holding first row of buttons
         var row1 = new JPanel();
         row1.setSize(new Dimension(100,20));
@@ -73,7 +110,7 @@ public class Ui implements ActionListener{
         vertLay.add(grid);
 
         //create list of all the button texts
-        String[] btnArray = {"^", "n√x", "<<", ">>", "7", "8", "9", "*", "4", "5", "6", "-", "1", "2", "3", "+", "+/-", "0", ".", "="};
+        String[] btnArray = {"^", "√", "<<", ">>", "7", "8", "9", "*", "4", "5", "6", "-", "1", "2", "3", "+", "+/-", "0", ".", "="};
         int len = btnArray.length;
         //initialize the jButton array to the length of btnArray
         btn = new JButton[len];
@@ -93,7 +130,6 @@ public class Ui implements ActionListener{
         window.setSize(700, 600);
         window.setVisible(true);
         window.setResizable(false); // disable window resizing
-
     }
 
     //getter method to get the text of the txt 
@@ -113,13 +149,53 @@ public class Ui implements ActionListener{
             txt.setText("");
             clickedForTheFirstTime = true;
         }
-        
+
+        String key = e.getActionCommand();
         String prevText = txt.getText();
-        if(e.getActionCommand().equals("=")){
 
+        if(key.equals("C")){
+            txt.setText("");
+            return;
+        }   
+        else if(key.equals("=")){
+            //check if the expression already exists in the list and remove it from previous index
+            int index = expressions.indexOf(prevText);
+            if(index > -1)
+                expressions.remove(index);
+    
+            //add the expression to the expressions list
+            expressions.add(prevText);
+            //update the expression list length and current position
+            expressionsLength = expressions.size();
+            currentPosition = expressionsLength - 1; // as it stores the index value
+
+            //make it false so that when next number is entered it clears the previous text
+            clickedForTheFirstTime = false;
+
+            //call method to evaluate or whatever...
+            calco.onEqualPressed();
+            return;
         }
-
-        txt.setText(prevText + e.getActionCommand());
+        else if(key.equals("+/-")){
+            txt.setText(prevText + "-");
+            return;
+        }
+        else if(key.equals("<<")){
+            txt.setText(expressions.get(currentPosition));
+            if(currentPosition > 0)
+                --currentPosition;
+            return;
+        }
+        else if(key.equals(">>")){
+            if(currentPosition < (expressionsLength - 1))
+                ++currentPosition;
+            txt.setText(expressions.get(currentPosition));
+            return;
+        }
+        else
+            txt.setText(prevText + key);
+        
+        txt.requestFocus();
     }
     
 }
