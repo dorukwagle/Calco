@@ -181,15 +181,15 @@ public class Ui implements ActionListener{
             return;
         }
         else if(key.equals("<<")){
-            txt.setText(expressions.get(currentPosition));
             if(currentPosition > 0)
-                --currentPosition;
+                txt.setText(expressions.get(--currentPosition));
+                // --currentPosition;
             return;
         }
         else if(key.equals(">>")){
             if(currentPosition < (expressionsLength - 1))
-                ++currentPosition;
-            txt.setText(expressions.get(currentPosition));
+            txt.setText(expressions.get(++currentPosition));
+                // ++currentPosition;
             return;
         }
         else
