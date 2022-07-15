@@ -145,13 +145,17 @@ public class Ui implements ActionListener{
 
     //define what happens when each buttons is pressed
     public void actionPerformed(ActionEvent e){
+        //set focus to the text area
+        txt.requestFocus();
+
+        String key = e.getActionCommand();
+        String prevText = txt.getText();
+
         if(!clickedForTheFirstTime){
             txt.setText("");
             clickedForTheFirstTime = true;
         }
 
-        String key = e.getActionCommand();
-        String prevText = txt.getText();
 
         if(key.equals("C")){
             txt.setText("");
@@ -159,6 +163,14 @@ public class Ui implements ActionListener{
         }   
         else if(key.equals("=")){
             //check if the expression already exists in the list and remove it from previous index
+            if(prevText.indexOf("\n") > -1)
+                return;
+            else if(prevText.indexOf("calculation") > -1)
+                return;
+            else if(prevText.equals(""))
+                return;
+
+            //check if the same expression already exists in the expressions list
             int index = expressions.indexOf(prevText);
             if(index > -1)
                 expressions.remove(index);
@@ -171,7 +183,6 @@ public class Ui implements ActionListener{
 
             //make it false so that when next number is entered it clears the previous text
             clickedForTheFirstTime = false;
-
             //call method to evaluate or whatever...
             calco.onEqualPressed();
             return;
@@ -183,19 +194,19 @@ public class Ui implements ActionListener{
         else if(key.equals("<<")){
             if(currentPosition > 0)
                 txt.setText(expressions.get(--currentPosition));
-                // --currentPosition;
             return;
         }
         else if(key.equals(">>")){
             if(currentPosition < (expressionsLength - 1))
             txt.setText(expressions.get(++currentPosition));
-                // ++currentPosition;
+            return;
+        }
+        else if(key.equals("√")){
+            txt.setText(prevText + "^0.5");
             return;
         }
         else
             txt.setText(prevText + key);
-        
-        txt.requestFocus();
     }
     
 }
