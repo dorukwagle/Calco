@@ -149,13 +149,11 @@ public class Ui implements ActionListener{
         txt.requestFocus();
 
         String key = e.getActionCommand();
-        String prevText = txt.getText();
-
-        if(!clickedForTheFirstTime){
+        if(!clickedForTheFirstTime && !key.equals("=")){
             txt.setText("");
             clickedForTheFirstTime = true;
         }
-
+        String prevText = txt.getText();
 
         if(key.equals("C")){
             txt.setText("");

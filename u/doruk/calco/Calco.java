@@ -1,7 +1,8 @@
 package u.doruk.calco;
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Locale;
+
 
 public class Calco{
     Ui ui;
@@ -75,7 +76,7 @@ public class Calco{
         ui.setTxt(exps + "\n" + ans);
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         //since for the first time evaluate method takes some time we invoke it here so it takes less time next time it is called via UI
         //instantiate eval object
         eval = new Evaluate();
